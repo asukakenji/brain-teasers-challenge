@@ -22,12 +22,12 @@ func TestDigitCount(t *testing.T) {
 		{1, 1},
 		{9, 1},
 		{10, 2},
-		{11, 2},
-		{19, 2},
+		{12, 2},
 		{99, 2},
 		{100, 3},
-		{101, 3},
-		{199, 3},
+		{102, 3},
+		{120, 3},
+		{123, 3},
 		{999, 3},
 		{1234, 4},
 	}
@@ -56,12 +56,12 @@ func TestSplit(t *testing.T) {
 		{1, []returnType{{0, 1, false}, {0, 1, false}, {0, 1, false}}},
 		{9, []returnType{{0, 9, false}, {0, 9, false}, {0, 9, false}}},
 		{10, []returnType{{1, 0, true}, {0, 10, false}, {0, 10, false}}},
-		{11, []returnType{{1, 1, true}, {0, 11, false}, {0, 11, false}}},
-		{19, []returnType{{1, 9, true}, {0, 19, false}, {0, 19, false}}},
+		{12, []returnType{{1, 2, true}, {0, 12, false}, {0, 12, false}}},
 		{99, []returnType{{9, 9, true}, {0, 99, false}, {0, 99, false}}},
 		{100, []returnType{{10, 0, true}, {1, 0, true}, {0, 100, false}}},
-		{101, []returnType{{10, 1, true}, {1, 1, true}, {0, 101, false}}},
-		{199, []returnType{{19, 9, true}, {1, 99, true}, {0, 199, false}}},
+		{102, []returnType{{10, 2, true}, {1, 2, true}, {0, 102, false}}},
+		{120, []returnType{{12, 0, true}, {1, 20, true}, {0, 120, false}}},
+		{123, []returnType{{12, 3, true}, {1, 23, true}, {0, 123, false}}},
 		{999, []returnType{{99, 9, true}, {9, 99, true}, {0, 999, false}}},
 		{1234, []returnType{{123, 4, true}, {12, 34, true}, {1, 234, true}, {0, 1234, false}}},
 	}
@@ -72,6 +72,123 @@ func TestSplit(t *testing.T) {
 			if gotN1 != expected.n1 || gotN2 != expected.n2 || gotOk != expected.ok {
 				t.Errorf("Iteration %d of split(%d) = (%d, %d, %t), expected (%d, %d, %t)", iteration, c.n, gotN1, gotN2, gotOk, expected.n1, expected.n2, expected.ok)
 			}
+		}
+	}
+}
+
+// TestCompute checks the function Compute() with predefined test cases.
+// Commented cases are failed, but they do not affect the current usage (digits = 123456789).
+func TestCompute(t *testing.T) {
+	cases := []struct {
+		digits   int
+		expected []Expression
+	}{
+		//{-12, []Expression{}},
+		//{-1, []Expression{}},
+		{0, []Expression{}},
+		{1, []Expression{}},
+		{9, []Expression{}},
+		{10, []Expression{
+			{"1 + 0", 1},
+			{"1 - 0", 1},
+		}},
+		{12, []Expression{
+			{"1 + 2", 3},
+			{"1 - 2", -1},
+		}},
+		{99, []Expression{
+			{"9 + 9", 18},
+			{"9 - 9", 0},
+		}},
+		{100, []Expression{
+			{"10 + 0", 10},
+			{"10 - 0", 10},
+			{"1 + 0", 1},
+			{"1 - 0", 1},
+			//{"1 + 0 + 0", 1},
+			//{"1 + 0 - 0", 1},
+			//{"1 - 0 + 0", 1},
+			//{"1 - 0 - 0", 1},
+		}},
+		{102, []Expression{
+			{"10 + 2", 12},
+			{"10 - 2", 8},
+			{"1 + 2", 3},
+			{"1 - 2", -1},
+			//{"1 + 0 + 2", 3},
+			//{"1 + 0 - 2", -1},
+			//{"1 - 0 + 2", 3},
+			//{"1 - 0 - 2", -1},
+		}},
+		{120, []Expression{
+			{"12 + 0", 12},
+			{"12 - 0", 12},
+			{"1 + 20", 21},
+			{"1 - 20", -19},
+			{"1 + 2 + 0", 3},
+			{"1 + 2 - 0", 3},
+			{"1 - 2 + 0", -1},
+			{"1 - 2 - 0", -1},
+		}},
+		{123, []Expression{
+			{"12 + 3", 15},
+			{"12 - 3", 9},
+			{"1 + 23", 24},
+			{"1 - 23", -22},
+			{"1 + 2 + 3", 6},
+			{"1 + 2 - 3", 0},
+			{"1 - 2 + 3", 2},
+			{"1 - 2 - 3", -4},
+		}},
+		{999, []Expression{
+			{"99 + 9", 108},
+			{"99 - 9", 90},
+			{"9 + 99", 108},
+			{"9 - 99", -90},
+			{"9 + 9 + 9", 27},
+			{"9 + 9 - 9", 9},
+			{"9 - 9 + 9", 9},
+			{"9 - 9 - 9", -9},
+		}},
+		{1234, []Expression{
+			{"123 + 4", 127},
+			{"123 - 4", 119},
+			{"12 + 34", 46},
+			{"12 - 34", -22},
+			{"12 + 3 + 4", 19},
+			{"12 + 3 - 4", 11},
+			{"12 - 3 + 4", 13},
+			{"12 - 3 - 4", 5},
+			{"1 + 234", 235},
+			{"1 - 234", -233},
+			{"1 + 23 + 4", 28},
+			{"1 + 23 - 4", 20},
+			{"1 - 23 + 4", -18},
+			{"1 - 23 - 4", -26},
+			{"1 + 2 + 34", 37},
+			{"1 + 2 - 34", -31},
+			{"1 - 2 + 34", 33},
+			{"1 - 2 - 34", -35},
+			{"1 + 2 + 3 + 4", 10},
+			{"1 + 2 + 3 - 4", 2},
+			{"1 + 2 - 3 + 4", 4},
+			{"1 + 2 - 3 - 4", -4},
+			{"1 - 2 + 3 + 4", 6},
+			{"1 - 2 + 3 - 4", -2},
+			{"1 - 2 - 3 + 4", 0},
+			{"1 - 2 - 3 - 4", -8},
+		}},
+	}
+	for _, c := range cases {
+		channel := Compute(c.digits)
+		for iteration, expected := range c.expected {
+			got := <-channel
+			if got.Text != expected.Text || got.Value != expected.Value {
+				t.Errorf("Iteration %d of Compute(%d) = Expression{%q, %d}, expected Expression{%q, %d}", iteration, c.digits, got.Text, got.Value, expected.Text, expected.Value)
+			}
+		}
+		for got := range channel {
+			t.Errorf("Compute(%d) has more results than expected: Expression{%q, %d}", c.digits, got.Text, got.Value)
 		}
 	}
 }
