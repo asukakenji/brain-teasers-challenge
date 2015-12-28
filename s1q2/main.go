@@ -6,12 +6,14 @@ import (
 )
 
 func main() {
-	digits := int(123456789)
-	sum := int(100)
+	digits := 123456789
+	sum := 100
 	fmt.Println("start", digits)
-	channel := lib.Compute(sum, digits)
+	channel := lib.Compute(digits)
 	for expression := range channel {
-		fmt.Printf("%s = %d\n", expression, sum)
+		if expression.Value == sum {
+			fmt.Printf("%s = %d\n", expression.Text, sum)
+		}
 	}
 	fmt.Println(digits)
 }

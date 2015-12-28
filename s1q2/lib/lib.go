@@ -2,31 +2,15 @@ package lib
 
 import "fmt"
 
-var _ = fmt.Println // TODO: Delete this!
-
-type prefix struct {
-	text  string
-	value int
+type Expression struct {
+	Text  string
+	Value int
 }
-
-/*
-func (p prefix) String() string {
-	return fmt.Sprintf("%q(%d)", p.text, p.value)
-}
-*/
 
 type state struct {
 	array    []int
-	prefixes []prefix
+	prefixes []Expression
 }
-
-/*
-func (s *state) print() {
-	fmt.Printf("array @ %p : %v\n", s.array)
-	fmt.Printf("prefixes @ %p : %v\n", s.prefixes)
-	fmt.Println()
-}
-*/
 
 var (
 	operators = map[string]func(int, int) int{
@@ -66,13 +50,13 @@ func split(n int) func() (int, int, bool) {
 	}
 }
 
-func compute(channel chan<- string, sum int, s *state) {
+func compute(channel chan<- Expression, s *state) {
 	last := s.array[len(s.array)-1]
 	for _, pfx := range s.prefixes {
 		for operator, function := range operators {
-			if function(pfx.value, last) == sum {
-				channel <- fmt.Sprintf("%s %s %d", pfx.text, operator, last)
-			}
+			text := fmt.Sprintf("%s %s %d", pfx.Text, operator, last)
+			value := function(pfx.Value, last)
+			channel <- Expression{text, value}
 		}
 	}
 
@@ -84,36 +68,36 @@ func compute(channel chan<- string, sum int, s *state) {
 			break
 		}
 		arrayNew := append(s.array[:length-1], n1, n2)
-		var prefixesNew []prefix
+		var prefixesNew []Expression
 		if len(s.prefixes) == 0 {
 			text := fmt.Sprintf("%d", n1)
 			value := n1
-			prefixesNew = []prefix{{text, value}}
+			prefixesNew = []Expression{{text, value}}
 		} else {
-			prefixesNew = make([]prefix, 0, len(s.prefixes)*len(operators))
+			prefixesNew = make([]Expression, 0, len(s.prefixes)*len(operators))
 			for _, pfx := range s.prefixes {
 				for operator, function := range operators {
-					text := fmt.Sprintf("%s %s %d", pfx.text, operator, n1)
-					value := function(pfx.value, n1)
-					prefixesNew = append(prefixesNew, prefix{text, value})
+					text := fmt.Sprintf("%s %s %d", pfx.Text, operator, n1)
+					value := function(pfx.Value, n1)
+					prefixesNew = append(prefixesNew, Expression{text, value})
 				}
 			}
 		}
 		stateNew := &state{arrayNew, prefixesNew}
-		compute(channel, sum, stateNew)
+		compute(channel, stateNew)
 	}
 }
 
-func Compute(sum, digits int) <-chan string {
-	channel := make(chan string)
+func Compute(digits int) <-chan Expression {
+	channel := make(chan Expression)
 	dc := digitCount(digits)
 	capacity := 1 << (dc - 1)
 	array := make([]int, 1, capacity)
 	array[0] = digits
-	prefixes := []prefix{}
+	prefixes := []Expression{}
 	s := &state{array, prefixes}
 	go func() {
-		compute(channel, sum, s)
+		compute(channel, s)
 		close(channel)
 	}()
 	return channel
