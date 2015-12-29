@@ -84,10 +84,13 @@ my solution, `Compute()` is a channel-based generator.
 
 ```
   Input: 12345
- Output: 1234, 5
-         123, 45
-		 12, 345
-		 1, 2345
+ Output: 1234, 5, true
+         123, 45, true
+		 12, 345, true
+		 1, 2345, true
+		 0, 12345, false
+		 0, 12345, false
+		 ...
 ```
 
 #### Compute
