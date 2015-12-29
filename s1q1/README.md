@@ -2,7 +2,7 @@
 
 This is the solution for the array partitioning challenge.
 
-## Running the source
+## Running the Source
 
 #### Run the source directly (a temporary binary is built behind the hood):
 
@@ -19,7 +19,20 @@ go build s1q1/main.go
 ./main
 ```
 
-## Source organization
+#### Run the unit tests:
+
+```sh
+cd brain-teasers-challenge
+go test ./s1q1/lib
+```
+
+#### Run the benchmarks:
+
+```sh
+cd brain-teasers-challenge
+go test -bench . ./s1q1/lib
+
+## Source Organization
 
 - `main.go` contains the `main()` function and other functions which are
 problem-specific and are not designed to be reusable for other projects.
@@ -73,56 +86,56 @@ arr │ 4 │ 7 │ 4 │ 0 │ 9 │ 8 │ 2 │ 7 │ 1 │ 9 │
 
 (5) Repeat (1) ~ (4) above:
 ```
-(1)
+(1) Increase i
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 7 │ 4 │ 0 │ 9 │ 8 │ 2 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
           ↑                       ↑
           i                       j
 
-(2)
+(2) Decrease j
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 7 │ 4 │ 0 │ 9 │ 8 │ 2 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
           ↑                   ↑
           i                   j
 
-(4)
+(4) Swap
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 2 │ 4 │ 0 │ 9 │ 8 │ 7 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
           ↑                   ↑
           i                   j
 
-(1)
+(1) Increase i
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 2 │ 4 │ 0 │ 9 │ 8 │ 7 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
                       ↑       ↑
                       i       j
 
-(2)
+(2) Decrease j
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 2 │ 4 │ 0 │ 9 │ 8 │ 7 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
                       ↑   ↑
                       i   j
 
-(4)
+(4) Swap
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 2 │ 4 │ 0 │ 8 │ 9 │ 7 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
                       ↑   ↑
                       i   j
 
-(1)
+(1) Increase i
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 2 │ 4 │ 0 │ 8 │ 9 │ 7 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
                          ↑ ↑
                          i j
 
-(2)
+(2) Decrease j
     ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
 arr │ 4 │ 2 │ 4 │ 0 │ 8 │ 9 │ 7 │ 7 │ 1 │ 9 │
     └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
