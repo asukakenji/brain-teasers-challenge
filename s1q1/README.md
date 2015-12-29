@@ -31,6 +31,7 @@ go test ./s1q1/lib
 ```sh
 cd brain-teasers-challenge
 go test -bench . ./s1q1/lib
+```
 
 ## Source Organization
 
