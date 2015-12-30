@@ -55,11 +55,11 @@ brain-teasers-challenge/
   ├─s2q1/
   │   ├─input.txt
   │   ├─lib/
-  │   │   ├─lib_test.go
+  │   │   ├─lib_test.go (not yet available)
   │   │   └─lib.go
   │   ├─main.go
   │   └─README.md
-  └─s2q2/
+  └─s2q2/ (not yet available)
       ├─lib/
       │   ├─lib_test.go
       │   └─lib.go
