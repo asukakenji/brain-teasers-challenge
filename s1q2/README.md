@@ -82,6 +82,10 @@ my solution, `Compute()` is a channel-based generator.
 
 #### split
 
+The `split()` function returns a closure. When the closure is invoked, the
+number is "split" from right to left. The `bool` in the result indicates whether
+there is a "next iteration":
+
 ```
   Input: 12345
  Output: 1234, 5, true
@@ -93,7 +97,10 @@ my solution, `Compute()` is a channel-based generator.
 		 ...
 ```
 
-#### Compute
+#### Compute (intermediate)
+
+The `Compute()` function calls the `split()` function to split the number. If
+the second number from the split is split-table, it will split it recursively:
 
 ```
   Input: 12345
@@ -113,3 +120,15 @@ my solution, `Compute()` is a channel-based generator.
 		 1, 2, 3, 45
 		 1, 2, 3, 4, 5
 ```
+
+#### Compute (actual)
+
+If the "+" and "-" operations are done after on each of the resulting splits,
+it requires O(m^n) time complexity just for one resulting split, where m is the
+number of available operations (2 in this case, namely "+" and "-"), and n is
+the number of digits of the number. For instance, to calculate all available
+expressions for `[1, 2, 3, 4, 5]`, it needs 2^4 calculations.
+
+Observing that the prefix of the expressions are shared among expressions, when
+they are calculated, they are stored and passed along with the recursion to save
+time. This requires O(m^n) total space, though.
